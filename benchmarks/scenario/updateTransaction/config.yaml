@@ -1,0 +1,112 @@
+simpleArgs: &simple-args
+  tokenId: 200
+
+test:
+  name: Update Transaction Order Revert Test
+  description: "Test revert functionality when update transactions are submitted out of order to update.sol"
+  workers:
+    number: 1
+  rounds:
+    - label: safeMint
+      description: "Mint initial NFT with version 1"
+      txNumber: 10
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1
+      workload:
+        module: benchmarks/scenario/updateTransaction/safeMint.js
+        arguments:
+          << : *simple-args
+      callback:
+        module: benchmarks/scenario/updateTransaction/utils/interval-callback.js
+      sleepAfterRound: 20
+    - label: update-success-v2
+      description: "Update with correct version 2 (should succeed)"
+      txNumber: 10
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1
+      workload:
+        module: benchmarks/scenario/updateTransaction/update-version.js
+        arguments:
+          << : *simple-args
+          version: 2
+          suffix: "v2-success"
+      callback:
+        module: benchmarks/scenario/updateTransaction/utils/interval-callback.js
+    # - label: update-success-v3
+    #   description: "Update with correct version 3 (should succeed)"
+    #   txNumber: 100
+    #   rateControl:
+    #     type: fixed-rate
+    #     opts:
+    #       tps: 10
+    #   workload:
+    #     module: benchmarks/scenario/updateTransaction/update-version.js
+    #     arguments:
+    #       << : *simple-args
+    #       version: 3
+    #       suffix: "v3-success"
+    #   callback:
+    #     module: benchmarks/scenario/updateTransaction/utils/interval-callback.js
+    # - label: update-revert-v2
+    #   description: "Update with old version 2 (should revert due to InvalidMetadataVersion)"
+    #   txNumber: 100
+    #   rateControl:
+    #     type: fixed-rate
+    #     opts:
+    #       tps: 10
+    #   workload:
+    #     module: benchmarks/scenario/updateTransaction/update-version.js
+    #     arguments:
+    #       << : *simple-args
+    #       version: 2
+    #       suffix: "v2-revert"
+    # - label: update-revert-v1
+    #   description: "Update with old version 1 (should revert due to InvalidMetadataVersion)"
+    #   txNumber: 100
+    #   rateControl:
+    #     type: fixed-rate
+    #     opts:
+    #       tps: 10
+    #   workload:
+    #     module: benchmarks/scenario/updateTransaction/update-version.js
+    #     arguments:
+    #       << : *simple-args
+    #       version: 1
+    #       suffix: "v1-revert"
+    # - label: batch-update-mixed-order
+    #   description: "Batch update with mixed valid and invalid versions to test order management"
+    #   txNumber: 100
+    #   rateControl:
+    #     type: fixed-rate
+    #     opts:
+    #       tps: 10
+    #   workload:
+    #     module: benchmarks/scenario/updateTransaction/batch-update-order-test.js
+    #     arguments:
+    #       << : *simple-args
+    # - label: concurrent-updates
+    #   description: "Multiple concurrent updates with different versions"
+    #   txNumber: 5
+    #   rateControl:
+    #     type: fixed-rate
+    #     opts:
+    #       tps: 2
+    #   workload:
+    #     module: benchmarks/scenario/updateTransaction/concurrent-update-order.js
+    #     arguments:
+    #       << : *simple-args
+    # - label: read-final-state
+    #   description: "Read final state and verify order management results"
+    #   txNumber: 100
+    #   rateControl:
+    #     type: fixed-rate
+    #     opts:
+    #       tps: 10
+    #   workload:
+    #     module: benchmarks/scenario/updateTransaction/read-with-history.js
+    #     arguments:
+    #       << : *simple-args

@@ -23,3 +23,18 @@ package-lock.json
 pkg
 bin
 .vscode
+# Ignore local blockchain keys, node data, and environment secrets
+networks/**/keys/
+networks/**/data/
+networks/**/grafana_db/
+networks/**/grafana/provisioning/datasources/datasource.yml
+*.db
+*.sqlite
+*.pem
+*.key
+.env
+# Ignore network config files that contain secrets; allow example templates
+networks/**/networkconfig*.json
+!networks/**/networkconfig.example.json
+# Ignore other local copies
+**/networkconfig copy*.json

@@ -1,0 +1,53 @@
+simpleArgs: &simple-args
+  # NOTE: This must match the contract's next tokenId at the start of the benchmark.
+  # On a freshly deployed `update` contract this is typically 0.
+  tokenId: 0
+
+test:
+  name: nft-create-update-delete
+  description: >-
+    Mint an ERC721 token, update its tokenURI exactly once (with monotonic versioning),
+    then logically delete it by setting `deleted=true`.
+
+    This scenario is based on the `benchmarks/scenario/updateTransaction` pattern.
+  workers:
+    number: 1
+  rounds:
+    - label: create (safeMint)
+      description: Mint NFTs (sequential tokenIds starting from tokenId).
+      txNumber: 10
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1
+      workload:
+        module: benchmarks/scenario/nft-create-update-delete/mint.js
+        arguments:
+          <<: *simple-args
+      sleepAfterRound: 20
+      
+    - label: update once (version=2)
+      description: Update tokenURI once per minted NFT.
+      txNumber: 10
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1
+      workload:
+        module: benchmarks/scenario/nft-create-update-delete/update.js
+        arguments:
+          <<: *simple-args
+          version: 2
+
+    - label: delete (logical)
+      description: Mark each NFT as deleted (setDeleted=true).
+      txNumber: 10
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1
+      workload:
+        module: benchmarks/scenario/nft-create-update-delete/delete.js
+        arguments:
+          <<: *simple-args
+          isDeleted: true

@@ -1,0 +1,39 @@
+simpleArgs: &simple-args
+  tokenId: 1
+
+test:
+  name: Consistency benchmark
+  workers:
+    number: 1
+  rounds:
+    - label: safeMint
+      txNumber: 10
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1
+      workload:
+        module: benchmarks/scenario/update/safeMint.js
+        arguments:
+          << : *simple-args
+    - label: update
+      txNumber: 10
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1
+      workload:
+        module: benchmarks/scenario/update/update.js
+        arguments:
+          << : *simple-args
+      sleepAfterRound: 20  # 🔥 ここに20秒の同期待ちを入れる
+    - label: read
+      txNumber: 10
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1
+      workload:
+        module: benchmarks/scenario/update/read.js
+        arguments:
+          << : *simple-args

@@ -1,0 +1,45 @@
+simpleArgs: &simple-args
+  tokenId: 350
+
+test:
+  name: CID State Verification Test
+  description: "Test NFT minting, updating, and latest CID state verification"
+  workers:
+    number: 1
+  rounds:
+    - label: safeMint
+      description: "Mint initial NFT with initial CID"
+      txNumber: 100
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 10
+      workload:
+        module: benchmarks/scenario/updateTransaction/revert/safeMint.js
+        arguments:
+          << : *simple-args
+    - label: update
+      description: "Update NFT with new CID"
+      txNumber: 100
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 10
+      workload:
+        module: benchmarks/scenario/updateTransaction/revert/update.js
+        arguments:
+          << : *simple-args
+          version: 3
+    - label: verify
+      description: "Verify latest CID state"
+      txNumber: 100
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 10
+      workload:
+        module: benchmarks/scenario/updateTransaction/revert/verify.js
+        arguments:
+          << : *simple-args
+      callback:
+        module: benchmarks/scenario/updateTransaction/revert/utils/interval-callback.js

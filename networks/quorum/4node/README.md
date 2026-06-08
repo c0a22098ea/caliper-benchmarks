@@ -3,11 +3,11 @@
 
 ## ベンチマークの環境構築
 GoQuorumネットワークで caliper-benchmark を使用する環境をセットアップする手順を説明する。
-- この環境用のディレクトリを作成します (例: `mkdir besu-benchmarks`)
-- そのディレクトリに移動します (例: `cd besu-benchmarks`)
+- この環境用のディレクトリを作成します (例: `mkdir quorum-benchmarks`)
+- そのディレクトリに移動します (例: `cd quorum-benchmarks`)
 - caliper-benchmarks をクローンします (上で作成したディレクトリ内に作成されていることを確認してください)
 ```bash
-git clone https://github.com/C0A21130/caliper-benchmarks.git
+git clone https://github.com/<your-org-or-account>/caliper-benchmarks.git
 ```
 - caliper-benchmarks ディレクトリに移動します
 ```bash
@@ -27,7 +27,8 @@ npx caliper bind --caliper-bind-sut besu:latest
 
 **注意点1**
 まず `hardhat` 等を利用してスマートコントラクトをデプロイしてください。
-デプロイ後に[networkconfig.json](/networks/quorum/4node/networkconfig.json)ファイルにおけるスマートコントラクトアドレスである `ethereum.contracts.ERC-721.address` と `ethereum.contracts.SsdlabToken.address` を変更してください。
+デプロイ後に[networkconfig.json](/networks/quorum/4node/networkconfig.json)ファイルにおけるスマートコントラクトアドレスである `ethereum.contracts.ERC-721.address` と `ethereum.contracts.SsdlabToken.address` を、ローカル環境の値に変更してください。
+公開用の GitHub に載せる場合は、実際の URL、アドレス、秘密鍵はこの README や `networkconfig.json` に直接書かず、`networkconfig.example.json` のようなテンプレートに分けて、実値はローカル専用ファイルとして管理してください。
 事前にスマートコントラクトをデプロイするためインストールはスキップします。
 
 **注意点2**
@@ -51,15 +52,15 @@ npx caliper launch manager --caliper-benchconfig benchmarks/scenario/scoring/con
 ネットワーク設定は [networkconfig.json](networkconfig.json) で定義されています。
 
 - **ブロックチェーンの種類**: Ethereum
-- **Network URL**: `ws://10.203.92.69:32000`
-- **Contract Deployer Address**: `0xd1cf9d73a91de6630c2bb068ba5fddf9f0deac09`
+- **Network URL**: `ws://<your-network-endpoint>`
+- **Contract Deployer Address**: `<your-deployer-address>`
 - **Transaction Confirmation Blocks**: 2
 - **スマートコントラクト設定**:
 
 | 項目 | ERC-721 | SsdlabToken (Scoring) |
 |------|---------|----------------------|
 | **Path** | `./src/ethereum/ERC-721/ERC-721.json` | `./src/ethereum/scoring/SsdlabToken.json` |
-| **Address** | `0x9EEa1CE7c0110036A1c89d3927493818F601307D` | `0x64ddbde36fD0d3E5fA4F0dF07aB02DA597f2987F` |
+| **Address** | `<erc-721-contract-address>` | `<scoring-contract-address>` |
 | **Estimate Gas** | `true` | `true` |
 | **Gas (mint/safeMint)** | 100000 | 150000 |
 | **Gas (transferFrom)** | 200000 | 700000 |

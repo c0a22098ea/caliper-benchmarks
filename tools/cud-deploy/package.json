@@ -1,0 +1,10 @@
+{
+  "name": "cud-deploy",
+  "private": true,
+  "version": "0.0.0",
+  "type": "commonjs",
+  "dependencies": {
+    "ethers": "^6.13.0",
+    "solc": "0.8.28"
+  }
+}
