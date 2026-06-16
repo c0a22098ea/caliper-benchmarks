@@ -48,6 +48,11 @@ npx caliper launch manager --caliper-benchconfig benchmarks/scenario/ERC-721/con
 npx caliper launch manager --caliper-benchconfig benchmarks/scenario/scoring/config.yaml --caliper-networkconfig networks/quorum/4node/networkconfig.json --caliper-workspace . --caliper-flow-skip-install
 ```
 
+- nft-create-update-delete
+```bash
+npx caliper launch manager --caliper-workspace . --caliper-benchconfig benchmarks/scenario/nft-create-update-delete/config.yaml --caliper-networkconfig networks/quorum/4node/networkconfig.json --caliper-flow-skip-install
+```
+
 ### Config network
 ネットワーク設定は [networkconfig.json](networkconfig.json) で定義されています。
 
@@ -81,3 +86,22 @@ npx caliper launch manager --caliper-benchconfig benchmarks/scenario/scoring/con
 | **TPS** | 20 | 20 |
 | **ワークロードモジュール** | `benchmarks/scenario/scoring/mint.js` | `benchmarks/scenario/scoring/transfer.js` |
 | **呼び出しメソッド** | `safeMint` | `transferFrom` |
+
+### Config benchmark (nft-create-update-delete)
+ベンチマーク設定は [config.yaml](../../../benchmarks/scenario/nft-create-update-delete/config.yaml) で定義されています。
+
+- **Name**: nft-create-update-delete
+- **Description**: ERC721トークンを作成し、tokenURI を1回更新した後、論理削除するベンチマーク
+- **Workers**: 1
+- **ベンチマーク**:
+
+| 項目 | Create(Mint) | Update | Delete |
+|------|--------------|--------|--------|
+| **説明** | NFTをミント | tokenURIを1回更新 | NFTを論理削除 |
+| **トランザクション数** | 10 | 10 | 10 |
+| **レート制御** | fixed-rate | fixed-rate | fixed-rate |
+| **TPS** | 1 | 1 | 1 |
+| **ワークロードモジュール** | `benchmarks/scenario/nft-create-update-delete/mint.js` | `benchmarks/scenario/nft-create-update-delete/update.js` | `benchmarks/scenario/nft-create-update-delete/delete.js` |
+| **呼び出しメソッド** | `safeMint` | `updateTokenURI` | `setDeleted` |
+
+
